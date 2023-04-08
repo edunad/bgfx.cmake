@@ -545,23 +545,13 @@ function(bgfx_compile_shader_to_header)
 	set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR PROFILES)
 	set(multiValueArgs SHADERS INCLUDE_DIRS)
 	cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
-	
+
 	if(NOT PROFILES)
 		set(PROFILES 120 300_es spirv) # pssl
-		if(UNIX AND NOT APPLE)
-			set(PLATFORM LINUX)
-		elseif(EMSCRIPTEN)
-			set(PLATFORM ASM_JS)
-		elseif(APPLE)
-			set(PLATFORM OSX)
+
+		if(APPLE)
 			list(APPEND PROFILES metal)
-		elseif(
-			WIN32
-			OR MINGW
-			OR MSYS
-			OR CYGWIN
-		)
-			set(PLATFORM WINDOWS)
+		elseif(WIN32 OR MINGW OR MSYS OR CYGWIN)
 			if(ARGS_TYPE STREQUAL "VERTEX" OR ARGS_TYPE STREQUAL "FRAGMENT")
 				list(APPEND PROFILES s_3_0)
 				list(APPEND PROFILES s_4_0)
@@ -572,9 +562,19 @@ function(bgfx_compile_shader_to_header)
 			else()
 				message(error "shaderc: Unsupported type")
 			endif()
-		else()
-			message(error "shaderc: Unsupported platform")
 		endif()
+	endif()
+
+	if(UNIX AND NOT APPLE)
+		set(PLATFORM LINUX)
+	elseif(EMSCRIPTEN)
+		set(PLATFORM ASM_JS)
+	elseif(APPLE)
+		set(PLATFORM OSX)
+	elseif(WIN32 OR MINGW OR MSYS OR CYGWIN)
+		set(PLATFORM WINDOWS)
+	else()
+		message(error "shaderc: Unsupported platform")
 	endif()
 
 	foreach(SHADER_FILE ${ARGS_SHADERS})
