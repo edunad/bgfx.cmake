@@ -535,41 +535,46 @@ endfunction()
 # 	SHADERS filenames
 # 	VARYING_DEF filename
 # 	OUTPUT_DIR directory
+# 	OUT_FILES_VAR variable name
+# 	INCLUDE_DIRS directories
+# 	PROFILES profiles
 # )
 #
 function(bgfx_compile_shader_to_header)
 	set(options "")
-	set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR)
-	set(multiValueArgs SHADERS)
+	set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR PROFILES)
+	set(multiValueArgs SHADERS INCLUDE_DIRS)
 	cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
-
-	set(PROFILES 120 300_es spirv) # pssl
-	if(UNIX AND NOT APPLE)
-		set(PLATFORM LINUX)
-	elseif(EMSCRIPTEN)
-		set(PLATFORM ASM_JS)
-	elseif(APPLE)
-		set(PLATFORM OSX)
-		list(APPEND PROFILES metal)
-	elseif(
-		WIN32
-		OR MINGW
-		OR MSYS
-		OR CYGWIN
-	)
-		set(PLATFORM WINDOWS)
-		if(ARGS_TYPE STREQUAL "VERTEX" OR ARGS_TYPE STREQUAL "FRAGMENT")
-			list(APPEND PROFILES s_3_0)
-			list(APPEND PROFILES s_4_0)
-			list(APPEND PROFILES s_5_0)
-		elseif(ARGS_TYPE STREQUAL "COMPUTE")
-			list(APPEND PROFILES s_4_0)
-			list(APPEND PROFILES s_5_0)
+	
+	if(NOT PROFILES)
+		set(PROFILES 120 300_es spirv) # pssl
+		if(UNIX AND NOT APPLE)
+			set(PLATFORM LINUX)
+		elseif(EMSCRIPTEN)
+			set(PLATFORM ASM_JS)
+		elseif(APPLE)
+			set(PLATFORM OSX)
+			list(APPEND PROFILES metal)
+		elseif(
+			WIN32
+			OR MINGW
+			OR MSYS
+			OR CYGWIN
+		)
+			set(PLATFORM WINDOWS)
+			if(ARGS_TYPE STREQUAL "VERTEX" OR ARGS_TYPE STREQUAL "FRAGMENT")
+				list(APPEND PROFILES s_3_0)
+				list(APPEND PROFILES s_4_0)
+				list(APPEND PROFILES s_5_0)
+			elseif(ARGS_TYPE STREQUAL "COMPUTE")
+				list(APPEND PROFILES s_4_0)
+				list(APPEND PROFILES s_5_0)
+			else()
+				message(error "shaderc: Unsupported type")
+			endif()
 		else()
-			message(error "shaderc: Unsupported type")
+			message(error "shaderc: Unsupported platform")
 		endif()
-	else()
-		message(error "shaderc: Unsupported platform")
 	endif()
 
 	foreach(SHADER_FILE ${ARGS_SHADERS})
@@ -596,12 +601,15 @@ function(bgfx_compile_shader_to_header)
 				PROFILE ${PROFILE}
 				O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
 				VARYINGDEF ${ARGS_VARYING_DEF}
-				INCLUDES ${BGFX_SHADER_INCLUDE_PATH}
+				INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
 				BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
 			)
 			list(APPEND OUTPUTS ${OUTPUT})
-			list(APPEND COMMANDS COMMAND bgfx::shaderc ${CLI})
+			list(APPEND COMMANDS COMMAND $<TARGET_FILE:shaderc> ${CLI})
 		endforeach()
+		if(DEFINED ARGS_OUT_FILES_VAR)
+			set(${ARGS_OUT_FILES_VAR} ${OUTPUTS} PARENT_SCOPE)
+		endif()
 
 		add_custom_command(
 			OUTPUT ${OUTPUTS}
