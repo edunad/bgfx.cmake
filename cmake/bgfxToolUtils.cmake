@@ -542,9 +542,8 @@ endfunction()
 #
 function(bgfx_compile_shader_to_header)
 	set(options "")
-	set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR PROFILES)
-	set(multiValueArgs SHADERS INCLUDE_DIRS)
-	cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
+	set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR PROFILES SHADERS INCLUDE_DIRS)
+	cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${ARGN}")
 
 	if(NOT PROFILES)
 		set(PROFILES 120 300_es spirv) # pssl
@@ -577,7 +576,7 @@ function(bgfx_compile_shader_to_header)
 		message(error "shaderc: Unsupported platform")
 	endif()
 
-	foreach(SHADER_FILE ${SHADERS})
+	foreach(SHADER_FILE ${ARGS_SHADERS})
 		source_group("Shaders" FILES "${SHADER}")
 		message("Parsing shader ${SHADER_FILE}")
 
@@ -606,7 +605,7 @@ function(bgfx_compile_shader_to_header)
 				PROFILE ${PROFILE}
 				O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
 				VARYINGDEF ${ARGS_VARYING_DEF}
-				INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${INCLUDE_DIRS}
+				INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
 				BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
 			)
 
