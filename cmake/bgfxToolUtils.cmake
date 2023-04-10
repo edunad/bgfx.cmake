@@ -577,8 +577,10 @@ function(bgfx_compile_shader_to_header)
 		message(error "shaderc: Unsupported platform")
 	endif()
 
-	foreach(SHADER_FILE ${ARGS_SHADERS})
+	foreach(SHADER_FILE ${SHADERS})
 		source_group("Shaders" FILES "${SHADER}")
+		message("Parsing shader ${SHADER_FILE}")
+
 		get_filename_component(SHADER_FILE_BASENAME ${SHADER_FILE} NAME)
 		get_filename_component(SHADER_FILE_NAME_WE ${SHADER_FILE} NAME_WE)
 		get_filename_component(SHADER_FILE_ABSOLUTE ${SHADER_FILE} ABSOLUTE)
@@ -588,11 +590,14 @@ function(bgfx_compile_shader_to_header)
 		set(COMMANDS "")
 		foreach(PROFILE ${PROFILES})
 			_bgfx_get_profile_ext(${PROFILE} PROFILE_EXT)
+
 			set(OUTPUT ${ARGS_OUTPUT_DIR}/${SHADER_FILE_BASENAME}.${PROFILE_EXT}.bin.h)
 			set(PLATFORM_I ${PLATFORM})
+
 			if(PROFILE STREQUAL "spirv")
 				set(PLATFORM_I LINUX)
 			endif()
+
 			_bgfx_shaderc_parse(
 				CLI #
 				${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
@@ -601,9 +606,10 @@ function(bgfx_compile_shader_to_header)
 				PROFILE ${PROFILE}
 				O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
 				VARYINGDEF ${ARGS_VARYING_DEF}
-				INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
+				INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${INCLUDE_DIRS}
 				BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
 			)
+
 			list(APPEND OUTPUTS ${OUTPUT})
 			list(APPEND COMMANDS COMMAND $<TARGET_FILE:shaderc> ${CLI})
 		endforeach()
