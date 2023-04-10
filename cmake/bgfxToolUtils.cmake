@@ -542,8 +542,9 @@ endfunction()
 #
 function(bgfx_compile_shader_to_header)
 	set(options "")
-	set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR PROFILES SHADERS INCLUDE_DIRS)
-	cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${ARGN}")
+	set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR PROFILES)
+	set(multiValueArgs SHADERS INCLUDE_DIRS)
+	cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
 
 	if(NOT PROFILES)
 		set(PROFILES 120 300_es spirv) # pssl
@@ -578,11 +579,13 @@ function(bgfx_compile_shader_to_header)
 
 	foreach(SHADER_FILE ${ARGS_SHADERS})
 		source_group("Shaders" FILES "${SHADER}")
-		message("Parsing shader ${SHADER_FILE}")
 
+		message("Parsing shader ${SHADER_FILE}")
 		get_filename_component(SHADER_FILE_BASENAME ${SHADER_FILE} NAME)
 		get_filename_component(SHADER_FILE_NAME_WE ${SHADER_FILE} NAME_WE)
 		get_filename_component(SHADER_FILE_ABSOLUTE ${SHADER_FILE} ABSOLUTE)
+
+		message("Parsing shader ${SHADER_FILE_ABSOLUTE}")
 
 		# Build output targets and their commands
 		set(OUTPUTS "")
@@ -612,6 +615,7 @@ function(bgfx_compile_shader_to_header)
 			list(APPEND OUTPUTS ${OUTPUT})
 			list(APPEND COMMANDS COMMAND $<TARGET_FILE:shaderc> ${CLI})
 		endforeach()
+
 		if(DEFINED ARGS_OUT_FILES_VAR)
 			set(${ARGS_OUT_FILES_VAR} ${OUTPUTS} PARENT_SCOPE)
 		endif()
