@@ -585,7 +585,7 @@ function(bgfx_compile_shader_to_header)
 		get_filename_component(SHADER_FILE_NAME_WE ${SHADER_FILE} NAME_WE)
 		get_filename_component(SHADER_FILE_ABSOLUTE ${SHADER_FILE} ABSOLUTE)
 
-		message("Parsing shader ${SHADER_FILE_ABSOLUTE}")
+		message("----\n ABS: ${SHADER_FILE_ABSOLUTE}\nNAME: ${SHADER_FILE_NAME_WE}\nBASE: ${SHADER_FILE_BASENAME}\n------\n")
 
 		# Build output targets and their commands
 		set(OUTPUTS "")
