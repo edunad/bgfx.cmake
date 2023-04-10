@@ -577,7 +577,7 @@ function(bgfx_compile_shader_to_header)
 		message(error "shaderc: Unsupported platform")
 	endif()
 
-	set(OUTPUTS "")
+	set(GENERATED_FILES "")
 	foreach(SHADER_FILE ${ARGS_SHADERS})
 		source_group("Shaders" FILES "${SHADER}")
 
@@ -586,9 +586,8 @@ function(bgfx_compile_shader_to_header)
 		get_filename_component(SHADER_FILE_NAME_WE ${SHADER_FILE} NAME_WE)
 		get_filename_component(SHADER_FILE_ABSOLUTE ${SHADER_FILE} ABSOLUTE)
 
-		message("----\n ABS: ${SHADER_FILE_ABSOLUTE}\nNAME: ${SHADER_FILE_NAME_WE}\nBASE: ${SHADER_FILE_BASENAME}\n------\n")
-
 		# Build output targets and their commands
+		set(OUTPUTS "")
 		set(COMMANDS "")
 		foreach(PROFILE ${PROFILES})
 			_bgfx_get_profile_ext(${PROFILE} PROFILE_EXT)
@@ -613,12 +612,10 @@ function(bgfx_compile_shader_to_header)
 			)
 
 			list(APPEND OUTPUTS ${OUTPUT})
+			list(APPEND GENERATED_FILES ${OUTPUT})
+
 			list(APPEND COMMANDS COMMAND $<TARGET_FILE:shaderc> ${CLI})
 		endforeach()
-
-		if(DEFINED ARGS_OUT_FILES_VAR)
-			set(${ARGS_OUT_FILES_VAR} ${OUTPUTS} PARENT_SCOPE)
-		endif()
 
 		add_custom_command(
 			OUTPUT ${OUTPUTS}
@@ -627,4 +624,9 @@ function(bgfx_compile_shader_to_header)
 			DEPENDS ${ARGS_VARYING_DEF}
 		)
 	endforeach()
+
+	if(DEFINED ARGS_OUT_FILES_VAR)
+		set(${ARGS_OUT_FILES_VAR} ${GENERATED_FILES} PARENT_SCOPE)
+	endif()
+
 endfunction()
