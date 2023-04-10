@@ -577,6 +577,7 @@ function(bgfx_compile_shader_to_header)
 		message(error "shaderc: Unsupported platform")
 	endif()
 
+	set(OUTPUTS "")
 	foreach(SHADER_FILE ${ARGS_SHADERS})
 		source_group("Shaders" FILES "${SHADER}")
 
@@ -588,7 +589,6 @@ function(bgfx_compile_shader_to_header)
 		message("----\n ABS: ${SHADER_FILE_ABSOLUTE}\nNAME: ${SHADER_FILE_NAME_WE}\nBASE: ${SHADER_FILE_BASENAME}\n------\n")
 
 		# Build output targets and their commands
-		set(OUTPUTS "")
 		set(COMMANDS "")
 		foreach(PROFILE ${PROFILES})
 			_bgfx_get_profile_ext(${PROFILE} PROFILE_EXT)
