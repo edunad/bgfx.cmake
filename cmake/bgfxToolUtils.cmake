@@ -595,6 +595,8 @@ function(bgfx_compile_shader_to_header)
 			set(VARYING "${SHADER_FILE_DIR}/varying.def.sc")
 		endif()
 
+		message("Using varying def: ${VARYING}")
+
 		# Build output targets and their commands
 		set(OUTPUTS "")
 		set(COMMANDS "")
@@ -609,7 +611,6 @@ function(bgfx_compile_shader_to_header)
 				set(PLATFORM_I LINUX)
 			endif()
 
-			message("Using varying def: ${VARYING}")
 			_bgfx_shaderc_parse(
 				CLI #
 				${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
