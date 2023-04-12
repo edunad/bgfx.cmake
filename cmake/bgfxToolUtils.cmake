@@ -577,11 +577,7 @@ function(bgfx_compile_shader_to_header)
 		message(error "shaderc: Unsupported platform")
 	endif()
 
-	if(NOT EXISTS "${ARGS_VARYING_DEF}")
-		set(ARGS_VARYING_DEF_SET FALSE)
-	else()
-		set(ARGS_VARYING_DEF_SET TRUE)
-	endif()
+
 
 	set(GENERATED_FILES "")
 	foreach(SHADER_FILE ${ARGS_SHADERS})
@@ -593,15 +589,10 @@ function(bgfx_compile_shader_to_header)
 		get_filename_component(SHADER_FILE_ABSOLUTE ${SHADER_FILE} ABSOLUTE)
 		get_filename_component(SHADER_FILE_DIR ${SHADER_FILE} DIRECTORY)
 
-
-		if(NOT ARGS_VARYING_DEF_SET)
-			set(ARGS_VARYING_DEF "${SHADER_FILE_DIR}/varying.def.sc")
-			message("Setting varying def: ${ARGS_VARYING_DEF}")
-
-			if(NOT EXISTS "${ARGS_VARYING_DEF}")
-				message(FATAL_ERROR "Varying def '${ARGS_VARYING_DEF}' does not exist")
-				return()
-			endif()
+		# Use varying.def if next to the shaders, else use root level varying def
+		set(VARYING "${ARGS_VARYING_DEF}")
+		if(EXISTS "${SHADER_FILE_DIR}/varying.def.sc")
+			set(VARYING "${SHADER_FILE_DIR}/varying.def.sc")
 		endif()
 
 		# Build output targets and their commands
@@ -618,6 +609,7 @@ function(bgfx_compile_shader_to_header)
 				set(PLATFORM_I LINUX)
 			endif()
 
+			message("Using varying def: ${VARYING}")
 			_bgfx_shaderc_parse(
 				CLI #
 				${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
@@ -625,7 +617,7 @@ function(bgfx_compile_shader_to_header)
 				OUTPUT ${OUTPUT}
 				PROFILE ${PROFILE}
 				O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
-				VARYINGDEF ${ARGS_VARYING_DEF}
+				VARYINGDEF ${VARYING}
 				INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
 				BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
 			)
@@ -640,7 +632,7 @@ function(bgfx_compile_shader_to_header)
 			OUTPUT ${OUTPUTS}
 			COMMAND ${CMAKE_COMMAND} -E make_directory ${ARGS_OUTPUT_DIR} ${COMMANDS}
 			MAIN_DEPENDENCY ${SHADER_FILE_ABSOLUTE}
-			DEPENDS ${ARGS_VARYING_DEF}
+			DEPENDS ${VARYING}
 		)
 	endforeach()
 
