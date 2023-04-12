@@ -577,6 +577,12 @@ function(bgfx_compile_shader_to_header)
 		message(error "shaderc: Unsupported platform")
 	endif()
 
+	if(NOT EXISTS "${ARGS_VARYING_DEF}")
+		set(ARGS_VARYING_DEF_SET FALSE)
+	else()
+		set(ARGS_VARYING_DEF_SET TRUE)
+	endif()
+
 	set(GENERATED_FILES "")
 	foreach(SHADER_FILE ${ARGS_SHADERS})
 		source_group("Shaders" FILES "${SHADER}")
@@ -588,8 +594,9 @@ function(bgfx_compile_shader_to_header)
 		get_filename_component(SHADER_FILE_DIR ${SHADER_FILE} DIRECTORY)
 
 
-		if(NOT EXISTS "${ARGS_VARYING_DEF}")
+		if(NOT ARGS_VARYING_DEF_SET)
 			set(ARGS_VARYING_DEF "${SHADER_FILE_DIR}/varying.def.sc")
+			message("Setting varying def: ${ARGS_VARYING_DEF}")
 
 			if(NOT EXISTS "${ARGS_VARYING_DEF}")
 				message(FATAL_ERROR "Varying def '${ARGS_VARYING_DEF}' does not exist")
@@ -600,6 +607,7 @@ function(bgfx_compile_shader_to_header)
 		# Build output targets and their commands
 		set(OUTPUTS "")
 		set(COMMANDS "")
+
 		foreach(PROFILE ${PROFILES})
 			_bgfx_get_profile_ext(${PROFILE} PROFILE_EXT)
 
