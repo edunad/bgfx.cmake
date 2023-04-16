@@ -578,10 +578,11 @@ function(bgfx_compile_shader_to_header)
 		message(error "shaderc: Unsupported platform")
 	endif()
 
-	if(NOT DEFINED OPTIMIZE)
+	if(NOT OPTIMIZE)
 		set(OPTIMIZE "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>")
-		message("Using optimization settings: ${OPTIMIZE}")
 	endif()
+
+	message("Using optimization settings: ${OPTIMIZE}")
 
 	set(GENERATED_FILES "")
 	foreach(SHADER_FILE ${ARGS_SHADERS})
