@@ -538,11 +538,12 @@ endfunction()
 # 	OUT_FILES_VAR variable name
 # 	INCLUDE_DIRS directories
 # 	PROFILES profiles
+#   OPTIMIZE dx_optimization_level
 # )
 #
 function(bgfx_compile_shader_to_header)
 	set(options "")
-	set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR PROFILES)
+	set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR PROFILES OPTIMIZE)
 	set(multiValueArgs SHADERS INCLUDE_DIRS)
 	cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
 
@@ -577,7 +578,10 @@ function(bgfx_compile_shader_to_header)
 		message(error "shaderc: Unsupported platform")
 	endif()
 
-
+	if(NOT DEFINED OPTIMIZE)
+		set(OPTIMIZE "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>")
+		message("Using optimization settings: ${OPTIMIZE}")
+	endif()
 
 	set(GENERATED_FILES "")
 	foreach(SHADER_FILE ${ARGS_SHADERS})
@@ -617,7 +621,7 @@ function(bgfx_compile_shader_to_header)
 				FILE ${SHADER_FILE_ABSOLUTE}
 				OUTPUT ${OUTPUT}
 				PROFILE ${PROFILE}
-				O "$<$<CONFIG:debug>:1>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
+				O ${OPTIMIZE}
 				VARYINGDEF ${VARYING}
 				INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
 				BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
