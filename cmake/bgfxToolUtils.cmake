@@ -617,7 +617,7 @@ function(bgfx_compile_shader_to_header)
 				FILE ${SHADER_FILE_ABSOLUTE}
 				OUTPUT ${OUTPUT}
 				PROFILE ${PROFILE}
-				O "$<$<CONFIG:debug>:0>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
+				O "$<$<CONFIG:debug>:1>$<$<CONFIG:release>:3>$<$<CONFIG:relwithdebinfo>:3>$<$<CONFIG:minsizerel>:3>"
 				VARYINGDEF ${VARYING}
 				INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
 				BIN2C BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT}
