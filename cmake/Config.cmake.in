@@ -25,22 +25,11 @@ if(@CMAKE_CROSSCOMPILING@)
 		endif()
 	endmacro()
 
-	if(@BGFX_BUILD_TOOLS_BIN2C@)
-		_bgfx_crosscompile_use_host_tool(bin2c) 
-	endif()
-	
-	if(@BGFX_BUILD_TOOLS_TEXTURE@)
-		_bgfx_crosscompile_use_host_tool(texturec)
-		_bgfx_crosscompile_use_host_tool(texturev)
-	endif()
-	
-	if(@BGFX_BUILD_TOOLS_SHADER@)
-		_bgfx_crosscompile_use_host_tool(shaderc)
-	endif()
-	
-	if(@BGFX_BUILD_TOOLS_GEOMETRY@)
-		_bgfx_crosscompile_use_host_tool(geometryv)
-	endif()
+	_bgfx_crosscompile_use_host_tool(bin2c) 
+	_bgfx_crosscompile_use_host_tool(texturec)
+	_bgfx_crosscompile_use_host_tool(texturev)
+	_bgfx_crosscompile_use_host_tool(shaderc)
+	_bgfx_crosscompile_use_host_tool(geometryv)
 endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/bgfxToolUtils.cmake")
