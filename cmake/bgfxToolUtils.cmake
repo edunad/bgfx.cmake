@@ -1,3 +1,5 @@
+message("-- Included bgfxToolUtils")
+
 # _bgfx_bin2c_parse(
 #	INPUT_FILE filename
 #	OUTPUT_FILE filename
