@@ -36,6 +36,7 @@ cmake_dependent_option(BGFX_BUILD_TOOLS_BIN2C "Build bx binary to c converter." 
 cmake_dependent_option(BGFX_BUILD_TOOLS_SHADER "Build bgfx shader tools." OFF BGFX_BUILD_TOOLS OFF)
 cmake_dependent_option(BGFX_BUILD_TOOLS_GEOMETRY "Build bgfx geometry tools." OFF BGFX_BUILD_TOOLS OFF)
 cmake_dependent_option(BGFX_BUILD_TOOLS_TEXTURE "Build bgfx texture tools." OFF BGFX_BUILD_TOOLS OFF)
+cmake_dependent_option(BGFX_TOOLS_EXAMPLES "Build bgfx tools examples" OFF BGFX_BUILD_TOOLS OFF)
 set(BGFX_TOOLS_PREFIX "" CACHE STRING "Prefix name to add to name of tools (to avoid clashes)")
 option(BGFX_BUILD_EXAMPLES "Build bgfx examples." ON)
 option(BGFX_BUILD_TESTS "Build bgfx tests." OFF)
@@ -47,6 +48,8 @@ option(BGFX_CUSTOM_TARGETS "Include convenience custom targets." ON)
 option(BGFX_CONFIG_MULTITHREADED "Build bgfx with multithreaded configuration" ON)
 option(BGFX_CONFIG_RENDERER_WEBGPU "Enable the webgpu renderer" OFF)
 option(BGFX_CONFIG_DEBUG_ANNOTATION "Enable gfx debug annotations (default: on in debug)" OFF)
+
+option(BGFX_DEAR_IMGUI "Build imgui" OFF)
 
 set(BGFX_OPENGL_VERSION "" CACHE STRING "Specify minimum opengl version")
 set(BGFX_OPENGLES_VERSION "" CACHE STRING "Specify minimum OpenGL ES version")
