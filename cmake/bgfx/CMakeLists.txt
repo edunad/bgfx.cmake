@@ -9,18 +9,22 @@
 # this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 include(bgfx.cmake)
-include(3rdparty/meshoptimizer.cmake)
-include(3rdparty/dear-imgui.cmake)
 
 include(shared.cmake)
 include(examples.cmake)
 
+if(BGFX_DEAR_IMGUI)
+	include(3rdparty/dear-imgui.cmake)
+endif()
+
 if(BGFX_BUILD_TOOLS_TEXTURE)
 	include(texturev.cmake)
 endif()
+
 if(BGFX_BUILD_TOOLS_GEOMETRY)
 	include(geometryc.cmake)
 	include(geometryv.cmake)
+	include(3rdparty/meshoptimizer.cmake)
 endif()
 if(BGFX_BUILD_TOOLS_SHADER)
 	include(3rdparty/spirv-opt.cmake)
