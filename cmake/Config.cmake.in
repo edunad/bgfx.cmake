@@ -24,9 +24,9 @@ if(@CMAKE_CROSSCOMPILING@)
 			set_target_properties(bgfx::${TOOL_NAME} PROPERTIES IMPORTED_LOCATION "${${TOOL_NAME}_EXECUTABLE}")
 		endif()
 	endmacro()
-	
+
 	if(@BGFX_BUILD_TOOLS_BIN2C@)
-		_bgfx_crosscompile_use_host_tool(bin2c) 
+		_bgfx_crosscompile_use_host_tool(bin2c)
 	endif()
 
 	if(@BGFX_BUILD_TOOLS_TEXTURE@)

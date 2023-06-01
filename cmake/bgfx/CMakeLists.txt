@@ -11,10 +11,7 @@
 include(bgfx.cmake)
 
 include(shared.cmake)
-
-if(BGFX_TOOLS_EXAMPLES)
-	include(examples.cmake)
-endif()
+include(examples.cmake)
 
 if(BGFX_DEAR_IMGUI)
 	include(3rdparty/dear-imgui.cmake)
@@ -25,10 +22,11 @@ if(BGFX_BUILD_TOOLS_TEXTURE)
 endif()
 
 if(BGFX_BUILD_TOOLS_GEOMETRY)
+	include(3rdparty/meshoptimizer.cmake)
 	include(geometryc.cmake)
 	include(geometryv.cmake)
-	include(3rdparty/meshoptimizer.cmake)
 endif()
+
 if(BGFX_BUILD_TOOLS_SHADER)
 	include(3rdparty/spirv-opt.cmake)
 	include(3rdparty/spirv-cross.cmake)
