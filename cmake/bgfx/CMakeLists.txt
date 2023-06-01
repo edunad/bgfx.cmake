@@ -11,7 +11,10 @@
 include(bgfx.cmake)
 
 include(shared.cmake)
-include(examples.cmake)
+
+if(BGFX_TOOLS_EXAMPLES)
+	include(examples.cmake)
+endif()
 
 if(BGFX_DEAR_IMGUI)
 	include(3rdparty/dear-imgui.cmake)
