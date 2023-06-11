@@ -22,8 +22,11 @@ set_target_properties(
 						OUTPUT_NAME ${BGFX_TOOLS_PREFIX}texturec #
 )
 
-if(BGFX_BUILD_TOOLS_TEXTURE AND BGFX_CUSTOM_TARGETS)
-	add_dependencies(tools texturec)
+if(BGFX_BUILD_TOOLS_TEXTURE)
+	add_executable(bgfx::texturec ALIAS texturec)
+	if(BGFX_CUSTOM_TARGETS)
+		add_dependencies(tools texturec)
+	endif()
 endif()
 
 if(BGFX_BUILD_TOOLS_TEXTURE)

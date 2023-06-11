@@ -27,8 +27,11 @@ set_target_properties(
 						 OUTPUT_NAME ${BGFX_TOOLS_PREFIX}geometryc #
 )
 
-if(BGFX_BUILD_TOOLS_GEOMETRY AND BGFX_CUSTOM_TARGETS)
-	add_dependencies(tools geometryc)
+if(BGFX_BUILD_TOOLS_GEOMETRY)
+	add_executable(bgfx::geometryc ALIAS geometryc)
+	if(BGFX_CUSTOM_TARGETS)
+		add_dependencies(tools geometryc)
+	endif()
 endif()
 
 if(BGFX_BUILD_TOOLS_GEOMETRY)

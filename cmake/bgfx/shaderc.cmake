@@ -50,8 +50,11 @@ set_target_properties(
 					   OUTPUT_NAME ${BGFX_TOOLS_PREFIX}shaderc #
 )
 
-if(BGFX_BUILD_TOOLS_SHADER AND BGFX_CUSTOM_TARGETS)
-	add_dependencies(tools shaderc)
+if(BGFX_BUILD_TOOLS_SHADER)
+	add_executable(bgfx::shaderc ALIAS shaderc)
+	if(BGFX_CUSTOM_TARGETS)
+		add_dependencies(tools shaderc)
+	endif()
 endif()
 
 if(BGFX_BUILD_TOOLS_SHADER)
