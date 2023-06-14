@@ -64,6 +64,7 @@ set(BGFX_CONFIG_MAX_DYNAMIC_VERTEX_BUFFERS "" CACHE STRING "Specify maximum dyna
 set(BGFX_CONFIG_MAX_INDEX_BUFFERS "" CACHE STRING "Specify maximum index buffer count")
 set(BGFX_CONFIG_MAX_DYNAMIC_INDEX_BUFFERS "" CACHE STRING "Specify maximum dynamic index buffer count")
 set(BGFX_CONFIG_MAX_TEXTURES "" CACHE STRING "Specify maximum texture count")
+set(BGFX_CONFIG_MAX_INSTANCE_DATA_COUNT "" CACHE STRING "Specify maximum instance data count")
 set(BGFX_CONFIG_MAX_TEXTURE_SAMPLERS "" CACHE STRING "Specify maximum texture samplers")
 set(BGFX_CONFIG_MAX_SHADERS "" CACHE STRING "Specify shader count")
 set(BGFX_CONFIG_SORT_KEY_NUM_BITS_PROGRAM "" CACHE STRING "Specify maximum program count as 2^(program bits)")
