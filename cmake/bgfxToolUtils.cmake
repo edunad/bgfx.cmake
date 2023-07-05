@@ -606,7 +606,7 @@ function(bgfx_compile_shader_to_header)
 		message("Using default optimization settings: ${OPTIMIZE}")
 	endif()
 
-	if(NOT WARNING_AS_ERROR MATCHES "")
+	if(WARNING_AS_ERROR MATCHES "ON")
 		set(WERROR_E STRING "WERROR")
 		message("Enabled warning as error")
 	else()
