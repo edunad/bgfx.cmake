@@ -541,7 +541,7 @@ endfunction()
 # 	INCLUDE_DIRS directories
 # 	PROFILES profiles
 #   OPTIMIZE dx_optimization_level
-#   WARNING_AS_ERROR
+#   PARAMS extraparams
 # )
 #
 function(bgfx_compile_shader_to_header)
@@ -553,7 +553,7 @@ function(bgfx_compile_shader_to_header)
 		OUT_FILES_VAR
 		PROFILES
 		OPTIMIZE
-		WARNING_AS_ERROR
+		PARAMS
 	)
 	set(multiValueArgs SHADERS INCLUDE_DIRS)
 	cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
@@ -606,14 +606,6 @@ function(bgfx_compile_shader_to_header)
 		message("Using default optimization settings: ${OPTIMIZE}")
 	endif()
 
-	if(WARNING_AS_ERROR MATCHES "ON")
-		set(WERROR_E STRING "WERROR")
-		message("Enabled warning as error")
-	else()
-		set(WERROR_E STRING "")
-		message("Disabled warning as error")
-	endif()
-
 	set(GENERATED_FILES "")
 	foreach(SHADER_FILE ${ARGS_SHADERS})
 		source_group("Shaders" FILES "${SHADER}")
@@ -648,7 +640,7 @@ function(bgfx_compile_shader_to_header)
 
 			_bgfx_shaderc_parse(
 				CLI #
-				${ARGS_TYPE} ${PLATFORM_I} ${WERROR_E} "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
+				${ARGS_TYPE} ${PLATFORM_I} ${PARAMS} "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
 				FILE ${SHADER_FILE_ABSOLUTE}
 				OUTPUT ${OUTPUT}
 				PROFILE ${PROFILE}
