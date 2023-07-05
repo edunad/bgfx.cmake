@@ -541,11 +541,20 @@ endfunction()
 # 	INCLUDE_DIRS directories
 # 	PROFILES profiles
 #   OPTIMIZE dx_optimization_level
+#   WARNING_AS_ERROR
 # )
 #
 function(bgfx_compile_shader_to_header)
 	set(options "")
-	set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR PROFILES OPTIMIZE)
+	set(oneValueArgs
+		TYPE
+		VARYING_DEF
+		OUTPUT_DIR
+		OUT_FILES_VAR
+		PROFILES
+		OPTIMIZE
+		WARNING_AS_ERROR
+	)
 	set(multiValueArgs SHADERS INCLUDE_DIRS)
 	cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
 
@@ -554,7 +563,12 @@ function(bgfx_compile_shader_to_header)
 
 		if(APPLE)
 			list(APPEND PROFILES metal)
-		elseif(WIN32 OR MINGW OR MSYS OR CYGWIN)
+		elseif(
+			WIN32
+			OR MINGW
+			OR MSYS
+			OR CYGWIN
+		)
 			if(ARGS_TYPE STREQUAL "VERTEX" OR ARGS_TYPE STREQUAL "FRAGMENT")
 				list(APPEND PROFILES s_3_0)
 				list(APPEND PROFILES s_4_0)
@@ -574,7 +588,12 @@ function(bgfx_compile_shader_to_header)
 		set(PLATFORM ASM_JS)
 	elseif(APPLE)
 		set(PLATFORM OSX)
-	elseif(WIN32 OR MINGW OR MSYS OR CYGWIN)
+	elseif(
+		WIN32
+		OR MINGW
+		OR MSYS
+		OR CYGWIN
+	)
 		set(PLATFORM WINDOWS)
 	else()
 		message(error "shaderc: Unsupported platform")
@@ -585,6 +604,14 @@ function(bgfx_compile_shader_to_header)
 		message("Using default optimization settings: ${OPTIMIZE}")
 	else()
 		message("Using optimization settings: ${OPTIMIZE}")
+	endif()
+
+	if(WARNING_AS_ERROR)
+		set(WERROR_E STRING "WERROR")
+		message("Enabled warning as error")
+	else()
+		set(WERROR_E STRING "")
+		message("Disabled warning as error")
 	endif()
 
 	set(GENERATED_FILES "")
@@ -621,7 +648,7 @@ function(bgfx_compile_shader_to_header)
 
 			_bgfx_shaderc_parse(
 				CLI #
-				${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
+				${ARGS_TYPE} ${PLATFORM_I} ${WERROR_E} "$<$<CONFIG:debug>:DEBUG>$<$<CONFIG:relwithdebinfo>:DEBUG>"
 				FILE ${SHADER_FILE_ABSOLUTE}
 				OUTPUT ${OUTPUT}
 				PROFILE ${PROFILE}
